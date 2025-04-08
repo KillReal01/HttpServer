@@ -1,0 +1,7 @@
+[2025-04-08 22:11:55.516] [info] Register route: /info
+[2025-04-08 22:11:55.516] [info] Register route: /log
+[2025-04-08 22:11:55.516] [info] Register route: /upload
+[2025-04-08 22:11:55.516] [info] HttpServer created
+[2025-04-08 22:11:55.516] [error] Server is not properly initialized
+[2025-04-08 22:11:55.516] [info] Server running at http://0.0.0.0:1616
+[2025-04-08 22:12:02.726] [info] Accepted: /log

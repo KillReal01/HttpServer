@@ -1,12 +1,24 @@
 #ifndef ROUTER_H
 #define ROUTER_H
 
-#include "mongoose.h"
 #include <functional>
 #include <string>
 #include <vector>
 
+extern "C" {
+    #include "mongoose.h"
+}
+
 enum class HttpMethod { GET, POST, PUT, DELETE, ANY };
+
+enum class HttpStatusCode : int
+{
+    OK                  = 200,
+    BadRequest          = 400,
+    Unauthorized        = 401,
+    NotFound            = 404,
+    InternalServerError = 500,
+};
 
 using Handler = std::function<void(mg_connection*, mg_http_message*)>;
 

@@ -7,12 +7,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(src)
 include_directories(src/http)
+include_directories(src/utils)
 include_directories(src/spdlog)
 
 set(SOURCES
     main.cpp
+
     src/http/mongoose.c
+    src/http/HttpHandler.cpp
+    src/http/HttpServer.cpp
     src/http/Router.cpp
+    
+    src/utils/Helper.cpp
 )
 
 add_executable(WebServer ${SOURCES})
