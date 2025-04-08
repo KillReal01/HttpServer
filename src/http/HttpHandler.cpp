@@ -18,7 +18,7 @@ void HttpHandler::HandleLog(mg_connection* c, mg_http_message* hm)
 {
     std::string path = Helper::GetLogFilename();
     std::ifstream logFile(path, std::ios::in | std::ios::binary);
-
+    
     if (!logFile.is_open())
     {
         spdlog::error("Failed to open log file: {}", path);
@@ -26,16 +26,30 @@ void HttpHandler::HandleLog(mg_connection* c, mg_http_message* hm)
         return;
     }
 
-    std::stringstream buffer;
-    buffer << logFile.rdbuf();
-    std::string logContent = buffer.str();
+    mg_http_reply(c, static_cast<int>(HttpStatusCode::OK),
+                  "Content-Type: text/plain; charset=utf-8\r\nTransfer-Encoding: chunked\r\n", "");
+
+    const size_t bufferSize = 8192;
+    char buffer[bufferSize];
+
+    while (!logFile.eof())
+    {
+        logFile.read(buffer, bufferSize);
+        size_t bytesRead = logFile.gcount();
+
+        if (bytesRead > 0)
+        {
+            char chunkHeader[32];
+            int headerSize = snprintf(chunkHeader, sizeof(chunkHeader), "%zx\r\n", bytesRead);
+            mg_send(c, chunkHeader, headerSize);
+            mg_send(c, buffer, bytesRead);
+            mg_send(c, "\r\n", 2);
+        }
+    }
+
+    mg_send(c, "0\r\n\r\n", 5);
 
     logFile.close();
-
-    mg_http_reply(c, static_cast<int>(HttpStatusCode::OK),
-                  "Content-Type: text/plain; charset=utf-8\r\n",
-                  "%.*s", static_cast<int>(logContent.size()), logContent.c_str());
-
     spdlog::info("Log file sent to client");
 }
 

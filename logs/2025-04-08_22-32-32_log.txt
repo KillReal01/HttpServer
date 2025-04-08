@@ -1,7 +1,0 @@
-[2025-04-08 22:32:32.499] [info] Register route: /info
-[2025-04-08 22:32:32.499] [info] Register route: /log
-[2025-04-08 22:32:32.499] [info] Register route: /upload
-[2025-04-08 22:32:32.499] [info] HttpServer created
-[2025-04-08 22:32:32.499] [info] Server running at http://0.0.0.0:1616
-[2025-04-08 22:32:35.869] [info] Accepted: /log
-[2025-04-08 22:32:35.869] [info] Log file sent to client
