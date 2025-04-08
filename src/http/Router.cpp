@@ -28,7 +28,7 @@ void Router::Handle(mg_connection* c, int ev, void* ev_data)
         }
     }
 
-    mg_http_reply(c, 404, "", R"({"error":"Not found"})");
+    mg_http_reply(c, static_cast<int>(HttpStatusCode::NotFound), "", R"({"error":"Not found"})");
 }
 
 

@@ -5,24 +5,21 @@ project(WebServer)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(src)
-include_directories(src/http)
-include_directories(src/utils)
-include_directories(src/spdlog)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/http)
+include_directories(${CMAKE_SOURCE_DIR}/src/utils)
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/spdlog)
 
 set(SOURCES
     main.cpp
-
     src/http/mongoose.c
     src/http/HttpHandler.cpp
     src/http/HttpServer.cpp
     src/http/Router.cpp
-    
     src/utils/Helper.cpp
 )
 
 add_executable(WebServer ${SOURCES})
 
-link_directories(${CMAKE_SOURCE_DIR}/src/spdlog/lib)
-
-target_link_libraries(WebServer pthread ${CMAKE_SOURCE_DIR}/src/spdlog/lib/libspdlog.a)
+target_link_libraries(WebServer pthread spdlog::spdlog)
