@@ -1,11 +1,14 @@
 #include "http/HttpServer.h"
 #include "http/HttpHandler.h"
 #include "http/Router.h"
-#include <spdlog/spdlog.h>
+#include "utils/NamedLogger.h"
 
 extern "C" {
     #include "http/mongoose.h"
 }
+
+
+static NamedLogger s_logger("HttpServer");
 
 
 HttpServer& HttpServer::Get()
@@ -19,15 +22,14 @@ HttpServer::HttpServer(int16_t port)
     :   _port(port),
         _isRunning(false)
 {
-    spdlog::debug("HttpServer, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-    spdlog::info("HttpServer created");
+    s_logger.Debug("[ThreadID: {}] HttpServer created", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 }
 
 
 HttpServer::~HttpServer()
 {
     Stop();
-    spdlog::info("HttpServer destroyed");
+    s_logger.Debug("[ThreadID: {}] HttpServer destroyed", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 }
 
 
@@ -53,13 +55,13 @@ void HttpServer::Setup()
 
     if (!_conn)
     {
-        spdlog::error("Failed to bind to port {}", _port);
+        s_logger.Error("Failed to bind to port {}", _port);
         std::exit(1);
     }
 
     _conn->fn_data = _router;
 
-    spdlog::info("Server running at {}", addr);
+    s_logger.Info("Server running at {}", addr);
 }
 
 
@@ -67,7 +69,7 @@ void HttpServer::Run()
 {
     if (!_mgr || !_conn)
     {
-        spdlog::error("Server is not properly initialized");
+        s_logger.Error("Server is not properly initialized");
         return;
     }
 
@@ -88,6 +90,6 @@ void HttpServer::Stop()
         _mgr = nullptr;
         _conn = nullptr;
         _isRunning = false;
-        spdlog::info("Server stopped");
+        s_logger.Info("Server stopped");
     }
 }

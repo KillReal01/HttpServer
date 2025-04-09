@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <spdlog/spdlog.h>
 
 extern "C" {
     #include "http/mongoose.h"
@@ -11,17 +10,20 @@ extern "C" {
 #include "http/Router.h"
 #include "thread/TaskManager.h"
 #include "utils/LoggerManager.h"
+#include "utils/NamedLogger.h"
+
+
+static NamedLogger s_logger("Main");
 
 
 int main()
 {
     LoggerManager::SetupLogger();
-    spdlog::debug("main, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-
+    s_logger.Debug("[ThreadID: {}]", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 
     if (geteuid() != 0)
     {
-        spdlog::error("Process was started by a non-root user");
+        s_logger.Error("Process was started by a non-root user");
         return 1;
     }
 

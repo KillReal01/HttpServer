@@ -1,8 +1,11 @@
 #include "thread/TaskManager.h"
-#include <spdlog/spdlog.h>
+#include "utils/NamedLogger.h"
 
 #include <string>
 #include <cstring>
+
+
+static NamedLogger s_logger("TaskManager");
 
 
 TaskManager::TaskManager(size_t threadPoolCapacity)
@@ -24,8 +27,7 @@ void TaskManager::Submit(mg_connection* c, mg_http_message* hm, HttpHandlerTask 
     std::string uri(hm->uri.buf, hm->uri.len);
     std::string body(hm->body.buf, hm->body.len);
 
-    spdlog::debug("Submit, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-    spdlog::info("Submit: {} {}", method, uri);
+    s_logger.Debug("[ThreadID: {}] Submit {} {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())), method, uri);
 
     _threadPoolPtr->Enqueue([=]() {
         task(c, hm);

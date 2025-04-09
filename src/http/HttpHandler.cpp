@@ -1,37 +1,40 @@
 #include "http/HttpHandler.h"
 #include "http/Router.h"
 #include "utils/LoggerManager.h"
+#include "utils/NamedLogger.h"
 
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <spdlog/spdlog.h>
+
+
+static NamedLogger s_logger("HttpHandler");
 
 
 void HttpHandler::HandleInfo(mg_connection* c, mg_http_message* hm)
 {
-    spdlog::debug("HandleInfo, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+    s_logger.Debug("[ThreadID: {}] HandleInfo", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     mg_http_reply(c, static_cast<int>(HttpStatusCode::OK), "Content-Type: text/plain\r\n", "Everything is OK");
 }
 
 
 void HttpHandler::HandleError(mg_connection* c, mg_http_message* hm)
 {
-    spdlog::debug("HandleError, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+    s_logger.Debug("[ThreadID: {}] HandleError", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     mg_http_reply(c, static_cast<int>(HttpStatusCode::NotFound), "Content-Type: text/plain\r\n", "Not found");
 }
 
 
 void HttpHandler::HandleLog(mg_connection* c, mg_http_message* hm)
 {
-    spdlog::debug("HandleLog, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+    s_logger.Debug("[ThreadID: {}] HandleLog", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 
     std::string path = LoggerManager::GetLogFilename();
     std::ifstream logFile(path, std::ios::in | std::ios::binary);
     
     if (!logFile.is_open())
     {
-        spdlog::error("Failed to open log file: {}", path);
+        s_logger.Error("Failed to open log file: {}", path);
         mg_http_reply(c, static_cast<int>(HttpStatusCode::InternalServerError), "Content-Type: text/plain\r\n", "Failed to open log file");
         return;
     }
@@ -60,13 +63,13 @@ void HttpHandler::HandleLog(mg_connection* c, mg_http_message* hm)
     mg_send(c, "0\r\n\r\n", 5);
 
     logFile.close();
-    spdlog::info("Log file sent to client");
+    s_logger.Info("Log file sent to client");
 }
 
 
 void HttpHandler::HandleUpload(mg_connection* conn, mg_http_message* hm)
 {
-    spdlog::debug("HandleUpload, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+    s_logger.Debug("[ThreadID: {}] HandleUpload", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 
     mg_http_part part;
     size_t pos = 0;
@@ -82,7 +85,7 @@ void HttpHandler::HandleUpload(mg_connection* conn, mg_http_message* hm)
         {
             out.write(filedata.data(), filedata.size());
             out.close();
-            spdlog::info("Saved upload to {}", filepath);
+            s_logger.Info("Saved upload to {}", filepath);
             mg_http_reply(conn, static_cast<int>(HttpStatusCode::OK), "", "Uploaded to %s\n", filepath.c_str());
         } 
         else

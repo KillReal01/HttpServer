@@ -1,14 +1,15 @@
 #include "thread/ThreadPool.h"
+#include "utils/NamedLogger.h"
 
-#include <spdlog/spdlog.h>
+
+static NamedLogger s_logger("ThreadPool");
 
 
 ThreadPool::ThreadPool(size_t numThreads)
 	:	_numThreads(numThreads),
 		_stop(false)
 {
-	spdlog::debug("ThreadPool, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-	spdlog::info("Number threads is {}", _numThreads);
+	s_logger.Debug("[ThreadID: {}] Number threads is {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())), _numThreads);
 
 	for (size_t i = 0; i < numThreads; ++i)
 	{

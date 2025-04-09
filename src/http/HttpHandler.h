@@ -18,7 +18,6 @@ public:
     static void HandleError(mg_connection* conn, mg_http_message* hm);
     
     static void EventHandler(mg_connection* c, int ev, void* ev_data);
-
 };
 
 #endif // HTTPHANDLER_H
