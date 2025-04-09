@@ -9,6 +9,8 @@ extern "C" {
     #include "mongoose.h"
 }
 
+#include "ThreadPool.h"
+
 enum class HttpMethod { GET, POST, PUT, DELETE, ANY };
 
 enum class HttpStatusCode : int
@@ -40,6 +42,7 @@ private:
 
 private:
     std::vector<Route> routes;
+	ThreadPool threadPool;
 };
 
 

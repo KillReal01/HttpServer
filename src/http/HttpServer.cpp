@@ -10,7 +10,7 @@ extern "C" {
 
 HttpServer& HttpServer::Get()
 {
-    static HttpServer instance(1616);
+    static HttpServer instance;
     return instance;
 }
 
@@ -31,6 +31,11 @@ void HttpServer::Init(Router* router)
 {
     _router = router;
     Setup();
+}
+
+void HttpServer::SetPort(int16_t port)
+{
+	_port = port;
 }
 
 void HttpServer::Setup()

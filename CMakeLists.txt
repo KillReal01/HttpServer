@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/http)
+include_directories(${CMAKE_SOURCE_DIR}/src/thread)
 include_directories(${CMAKE_SOURCE_DIR}/src/utils)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/spdlog)
@@ -17,6 +18,7 @@ set(SOURCES
     src/http/HttpHandler.cpp
     src/http/HttpServer.cpp
     src/http/Router.cpp
+	src/thread/ThreadPool.cpp
     src/utils/LoggerManager.cpp
 )
 

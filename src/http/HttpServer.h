@@ -15,9 +15,10 @@ public:
     void Init(Router* router);
     void Run();
     void Stop();
+	void SetPort(int16_t port);
 
 private:
-    explicit HttpServer(int16_t port);
+    explicit HttpServer(int16_t port = 80);
     void Setup();
 
 private:
