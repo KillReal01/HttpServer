@@ -36,8 +36,8 @@ void LoggerManager::SetupLogger()
 
     spdlog::set_default_logger(logger);
     logger->flush_on(spdlog::level::debug);
-
-	Initialized = true;
+    
+    Initialized = true;
 }
 
 

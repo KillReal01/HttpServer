@@ -18,8 +18,8 @@ public:
     void Setup();
     void Run();
     void Stop();
-
-	void SetPort(int16_t port);
+    
+    void SetPort(int16_t port);
 
 private:
     explicit HttpServer(int16_t port = 80);

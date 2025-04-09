@@ -15,8 +15,8 @@ private:
 
 private:
     static std::string LogFilename;
-	static bool Initialized;
-	static std::mutex LogFilenameGuard;
+    static bool Initialized;
+    static std::mutex LogFilenameGuard;
 };
 
 #endif // LOGGERMANAGER_H

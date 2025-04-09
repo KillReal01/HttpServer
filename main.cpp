@@ -32,9 +32,9 @@ int main()
     router.Register(HttpMethod::GET, "/log", HttpHandler::HandleLog);
     router.Register(HttpMethod::POST, "/upload", HttpHandler::HandleUpload);
 
-	HttpServer::Get().SetPort(1616);
+    HttpServer::Get().SetPort(1616);
     HttpServer::Get().SetRouter(&router);
-
+    
     HttpServer::Get().Setup();
     HttpServer::Get().Run();
 
