@@ -1,10 +1,12 @@
-#include "Router.h"
-
+#include "http/Router.h"
+#include "http/HttpHandler.h"
+#include "thread/TaskManager.h"
 #include <spdlog/spdlog.h>
 
 
-void Router::Register(HttpMethod method, const std::string& path, Handler handler)
+void Router::Register(HttpMethod method, const std::string& path, HttpHandlerTask handler)
 {
+    spdlog::debug("Register, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     spdlog::info("Register route: {}", path);
     routes.emplace_back(Route{method, path, std::move(handler)});
 }
@@ -23,13 +25,14 @@ void Router::Handle(mg_connection* c, int ev, void* ev_data)
         if ((route.method == HttpMethod::ANY || MethodMatches(route.method, method)) &&
             mg_match(hm->uri, mg_str(route.path.c_str()), nullptr))
         {
+            spdlog::debug("Handle, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
             spdlog::info("Accepted: {}", std::string(hm->uri.buf, hm->uri.len));
-            route.handler(c, hm);
+            TaskManager::Get().Submit(c, hm, route.handler);
             return;
         }
     }
 
-    mg_http_reply(c, static_cast<int>(HttpStatusCode::NotFound), "", R"({"error":"Not found"})");
+    TaskManager::Get().Submit(c, hm, HttpHandler::HandleError);
 }
 
 

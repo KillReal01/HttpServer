@@ -6,10 +6,11 @@
 #include <vector>
 
 extern "C" {
-    #include "mongoose.h"
+    #include "http/mongoose.h"
 }
 
-#include "ThreadPool.h"
+#include "http/HttpHandler.h"
+
 
 enum class HttpMethod { GET, POST, PUT, DELETE, ANY };
 
@@ -22,19 +23,17 @@ enum class HttpStatusCode : int
     InternalServerError = 500,
 };
 
-using Handler = std::function<void(mg_connection*, mg_http_message*)>;
-
 struct Route
 {
     HttpMethod method;
     std::string path;
-    Handler handler;
+    HttpHandlerTask handler;
 };
 
 class Router
 {
 public:
-    void Register(HttpMethod method, const std::string& path, Handler handler);
+    void Register(HttpMethod method, const std::string& path, HttpHandlerTask handler);
     void Handle(mg_connection* c, int ev, void* ev_data);
 
 private:
@@ -42,7 +41,6 @@ private:
 
 private:
     std::vector<Route> routes;
-	ThreadPool threadPool;
 };
 
 

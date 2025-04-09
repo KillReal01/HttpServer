@@ -1,25 +1,30 @@
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H
 
-#include "Router.h"
+#include "http/Router.h"
+#include "thread/TaskManager.h"
 
 class HttpServer
 {
 public: 
     static HttpServer& Get();
-    ~HttpServer();
 
     HttpServer(const HttpServer&) = delete;
     HttpServer& operator=(const HttpServer&) = delete;
 
-    void Init(Router* router);
+    void SetRouter(Router* router);
+
+    void Setup();
     void Run();
     void Stop();
+
 	void SetPort(int16_t port);
 
 private:
     explicit HttpServer(int16_t port = 80);
-    void Setup();
+    ~HttpServer();
+    
+    
 
 private:
     int16_t _port;

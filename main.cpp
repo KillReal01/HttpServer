@@ -3,18 +3,21 @@
 #include <spdlog/spdlog.h>
 
 extern "C" {
-    #include "mongoose.h"
+    #include "http/mongoose.h"
 }
 
-#include "Router.h"
-#include "LoggerManager.h"
-#include "HttpHandler.h"
-#include "HttpServer.h"
+#include "http/HttpHandler.h"
+#include "http/HttpServer.h"
+#include "http/Router.h"
+#include "thread/TaskManager.h"
+#include "utils/LoggerManager.h"
 
 
 int main()
 {
     LoggerManager::SetupLogger();
+    spdlog::debug("main, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+
 
     if (geteuid() != 0)
     {
@@ -28,7 +31,9 @@ int main()
     router.Register(HttpMethod::POST, "/upload", HttpHandler::HandleUpload);
 
 	HttpServer::Get().SetPort(1616);
-    HttpServer::Get().Init(&router);
+    HttpServer::Get().SetRouter(&router);
+
+    HttpServer::Get().Setup();
     HttpServer::Get().Run();
 
     return 0;

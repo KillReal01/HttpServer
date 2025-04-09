@@ -2,13 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 
 project(WebServer)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/src/http)
-include_directories(${CMAKE_SOURCE_DIR}/src/thread)
-include_directories(${CMAKE_SOURCE_DIR}/src/utils)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/spdlog)
 
@@ -19,6 +16,7 @@ set(SOURCES
     src/http/HttpServer.cpp
     src/http/Router.cpp
 	src/thread/ThreadPool.cpp
+    src/thread/TaskManager.cpp
     src/utils/LoggerManager.cpp
 )
 

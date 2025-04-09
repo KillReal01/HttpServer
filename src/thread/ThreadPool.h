@@ -18,11 +18,12 @@ public:
     void Enqueue(std::function<void()> task);
 
 private:
-    std::vector<std::thread> workers;
-    std::queue<std::function<void()>> tasks;
-    std::mutex queueMutex;
-    std::condition_variable condition;
-    std::atomic<bool> stop;
+    size_t _numThreads;
+    std::vector<std::thread> _workers;
+    std::queue<std::function<void()>> _tasks;
+    std::mutex _queueMutex;
+    std::condition_variable _condition;
+    std::atomic<bool> _stop;
 };
 
 

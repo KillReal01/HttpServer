@@ -1,10 +1,10 @@
-#include "HttpServer.h"
-#include "Router.h"
-#include "HttpHandler.h"
+#include "http/HttpServer.h"
+#include "http/HttpHandler.h"
+#include "http/Router.h"
 #include <spdlog/spdlog.h>
 
 extern "C" {
-    #include "mongoose.h"
+    #include "http/mongoose.h"
 }
 
 
@@ -14,12 +14,15 @@ HttpServer& HttpServer::Get()
     return instance;
 }
 
+
 HttpServer::HttpServer(int16_t port)
     :   _port(port),
         _isRunning(false)
 {
+    spdlog::debug("HttpServer, ThreadID: {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     spdlog::info("HttpServer created");
 }
+
 
 HttpServer::~HttpServer()
 {
@@ -27,16 +30,18 @@ HttpServer::~HttpServer()
     spdlog::info("HttpServer destroyed");
 }
 
-void HttpServer::Init(Router* router)
+
+void HttpServer::SetRouter(Router* router)
 {
     _router = router;
-    Setup();
 }
+
 
 void HttpServer::SetPort(int16_t port)
 {
 	_port = port;
 }
+
 
 void HttpServer::Setup()
 {
@@ -57,6 +62,7 @@ void HttpServer::Setup()
     spdlog::info("Server running at {}", addr);
 }
 
+
 void HttpServer::Run()
 {
     if (!_mgr || !_conn)
@@ -71,6 +77,7 @@ void HttpServer::Run()
         mg_mgr_poll(_mgr, 1000);
     }
 }
+
 
 void HttpServer::Stop()
 {
