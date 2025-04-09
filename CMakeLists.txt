@@ -17,7 +17,7 @@ set(SOURCES
     src/http/HttpHandler.cpp
     src/http/HttpServer.cpp
     src/http/Router.cpp
-    src/utils/Helper.cpp
+    src/utils/LoggerManager.cpp
 )
 
 add_executable(WebServer ${SOURCES})

@@ -1,5 +1,5 @@
 #include "HttpHandler.h"
-#include "Helper.h"
+#include "LoggerManager.h"
 #include "Router.h"
 
 #include <string>
@@ -16,7 +16,7 @@ void HttpHandler::HandleInfo(mg_connection* c, mg_http_message* hm)
 
 void HttpHandler::HandleLog(mg_connection* c, mg_http_message* hm)
 {
-    std::string path = Helper::GetLogFilename();
+    std::string path = LoggerManager::GetLogFilename();
     std::ifstream logFile(path, std::ios::in | std::ios::binary);
     
     if (!logFile.is_open())

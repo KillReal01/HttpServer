@@ -7,14 +7,14 @@ extern "C" {
 }
 
 #include "Router.h"
-#include "Helper.h"
+#include "LoggerManager.h"
 #include "HttpHandler.h"
 #include "HttpServer.h"
 
 
 int main()
 {
-    Helper::SetupLogger();
+    LoggerManager::SetupLogger();
 
     if (geteuid() != 0)
     {

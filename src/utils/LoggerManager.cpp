@@ -1,4 +1,4 @@
-#include "Helper.h"
+#include "LoggerManager.h"
 
 #include <chrono>
 #include <iomanip>
@@ -9,17 +9,24 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 
-std::string Helper::_logFilename = "logs/log.txt";
+std::string LoggerManager::LogFilename = "logs/log.txt";
+bool LoggerManager::Initialized = false;
+std::mutex LoggerManager::LogFilenameGuard;
 
 
-void Helper::SetupLogger()
+void LoggerManager::SetupLogger()
 {
-    _logFilename = CreateLogFilename();
+    std::lock_guard<std::mutex> lock(LogFilenameGuard);
+
+    if (Initialized)
+        return;
+
+    LogFilename = CreateLogFilename();
 
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_level(spdlog::level::info); 
 
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(_logFilename, true);
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(LogFilename, true);
     file_sink->set_level(spdlog::level::trace);    
 
     std::vector<spdlog::sink_ptr> sinks{console_sink, file_sink};
@@ -29,14 +36,20 @@ void Helper::SetupLogger()
 
     spdlog::set_default_logger(logger);
     logger->flush_on(spdlog::level::debug);
+
+	Initialized = true;
 }
 
 
-std::string Helper::GetLogFilename()
-{ return _logFilename; }
+const std::string& LoggerManager::GetLogFilename()
+{
+    if (!Initialized)
+        SetupLogger();
+    return LogFilename;
+}
 
 
-std::string Helper::CreateLogFilename()
+std::string LoggerManager::CreateLogFilename()
 {
     auto now = std::chrono::system_clock::now();
     auto now_time_t = std::chrono::system_clock::to_time_t(now);
