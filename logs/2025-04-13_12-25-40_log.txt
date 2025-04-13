@@ -1,2 +1,0 @@
-[2025-04-13 12:25:40.416] [debug] [Main] [ThreadID: 4168568191434668774]
-[2025-04-13 12:25:40.416] [error] [Main] Process was started by a non-root user
