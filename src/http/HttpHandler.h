@@ -8,6 +8,7 @@ extern "C" {
 }
 
 using HttpHandlerTask  = std::function<void(mg_connection*, mg_http_message*)>;
+using Task = std::function<void()>;
 
 class HttpHandler
 {

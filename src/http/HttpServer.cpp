@@ -7,13 +7,16 @@ extern "C" {
     #include "http/mongoose.h"
 }
 
+#include <memory>
 
 static NamedLogger s_logger("HttpServer");
 
 
 HttpServer::HttpServer(int16_t port)
     :   _port(port),
-        _isRunning(false)
+        _isRunning(false),
+        _router(this),
+        _threadPool(std::thread::hardware_concurrency() - 1)
 {
     s_logger.Debug("[ThreadID: {}] HttpServer created", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
 }
@@ -23,12 +26,6 @@ HttpServer::~HttpServer()
 {
     Stop();
     s_logger.Debug("[ThreadID: {}] HttpServer destroyed", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-}
-
-
-void HttpServer::SetRouter(const Router& router)
-{
-    _router = router;
 }
 
 
@@ -95,15 +92,16 @@ void HttpServer::Stop()
 }
 
 
-void HttpServer::RunAsync(TaskManager::Task task)
+void HttpServer::RunAsync(Task task)
 {
-    s_logger.Info("RunAsync");
-    // _taskManager.Submit(task);
+    _threadPool.Enqueue([task]() {
+        task();
+    });
 }
 
 
-void HttpServer::RunInMainLoop(TaskManager::Task task)
+void HttpServer::RunInMainLoop(Task task)
 {
-    s_logger.Info("RunInMainLoop");
+    s_logger.Debug("[ThreadID: {}] RunInMainLoop", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     task();
 }

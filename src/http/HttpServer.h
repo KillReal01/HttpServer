@@ -2,7 +2,7 @@
 #define HTTPSERVER_H
 
 #include "http/Router.h"
-#include "thread/TaskManager.h"
+#include "thread/ThreadPool.h"
 
 
 class HttpServer
@@ -14,7 +14,6 @@ public:
     HttpServer(const HttpServer&) = delete;
     HttpServer& operator=(const HttpServer&) = delete;
 
-    void SetRouter(const Router& router);
     void SetRoute(HttpMethod method, const std::string& path, HttpHandlerTask handler);
 
     void Setup();
@@ -23,9 +22,8 @@ public:
     
     void SetPort(int16_t port);
 
-private:
-    void RunAsync(TaskManager::Task task);
-    void RunInMainLoop(TaskManager::Task task);
+    void RunAsync(Task task);
+    void RunInMainLoop(Task task);
   
 private:
     int16_t _port;
@@ -34,8 +32,7 @@ private:
     bool _isRunning;
 
     Router _router;
-    TaskManager _taskManager;
-
+    ThreadPool _threadPool;
 };
 
 #endif // HTTPSERVER_H

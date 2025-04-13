@@ -16,7 +16,6 @@ set(SOURCES
     src/http/HttpServer.cpp
     src/http/Router.cpp
 	src/thread/ThreadPool.cpp
-    src/thread/TaskManager.cpp
     src/utils/LoggerManager.cpp
 )
 
