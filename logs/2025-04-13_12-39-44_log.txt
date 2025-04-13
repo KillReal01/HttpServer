@@ -1,0 +1,8 @@
+[2025-04-13 12:39:44.364] [debug] [Main] [ThreadID: 9029965048258728735]
+[2025-04-13 12:39:44.364] [debug] [ThreadPool] [ThreadID: 9029965048258728735] Number threads is 5
+[2025-04-13 12:39:44.364] [debug] [HttpServer] [ThreadID: 9029965048258728735] HttpServer created
+[2025-04-13 12:39:44.364] [info] [Router] Register route: /info
+[2025-04-13 12:39:44.364] [info] [Router] Register route: /log
+[2025-04-13 12:39:44.365] [info] [Router] Register route: /upload
+[2025-04-13 12:39:44.365] [info] [HttpServer] Server setup at http://0.0.0.0:1616
+[2025-04-13 12:39:44.365] [info] [HttpServer] Server is running

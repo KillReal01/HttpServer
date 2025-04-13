@@ -27,16 +27,15 @@ int main()
         return 1;
     }
 
-    Router router;
-    router.Register(HttpMethod::GET, "/info", HttpHandler::HandleInfo);
-    router.Register(HttpMethod::GET, "/log", HttpHandler::HandleLog);
-    router.Register(HttpMethod::POST, "/upload", HttpHandler::HandleUpload);
+    HttpServer server;
+    server.SetPort(1616);
 
-    HttpServer::Get().SetPort(1616);
-    HttpServer::Get().SetRouter(&router);
-    
-    HttpServer::Get().Setup();
-    HttpServer::Get().Run();
+    server.SetRoute(HttpMethod::GET, "/info", HttpHandler::HandleInfo);
+    server.SetRoute(HttpMethod::GET, "/log", HttpHandler::HandleLog);
+    server.SetRoute(HttpMethod::POST, "/upload", HttpHandler::HandleUpload);
+
+    server.Setup();
+    server.Run();
 
     return 0;
 }

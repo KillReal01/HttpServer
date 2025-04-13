@@ -29,12 +29,12 @@ void Router::Handle(mg_connection* c, int ev, void* ev_data)
         {
             s_logger.Debug("[ThreadID: {}]  Handle {}", static_cast<size_t>(std::hash<std::thread::id>{}(std::this_thread::get_id())), std::string(hm->uri.buf, hm->uri.len));
             s_logger.Info("Accepted: {} {}", std::string(hm->method.buf, hm->method.len), std::string(hm->uri.buf, hm->uri.len));
-            TaskManager::Get().Submit(c, hm, route.handler);
+            route.handler(c, hm);
             return;
         }
     }
 
-    TaskManager::Get().Submit(c, hm, HttpHandler::HandleError);
+    HttpHandler::HandleError(c, hm);
 }
 
 

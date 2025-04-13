@@ -8,12 +8,14 @@
 class HttpServer
 {
 public: 
-    static HttpServer& Get();
+    explicit HttpServer(int16_t port = 80);
+    ~HttpServer();
 
     HttpServer(const HttpServer&) = delete;
     HttpServer& operator=(const HttpServer&) = delete;
 
-    void SetRouter(Router* router);
+    void SetRouter(const Router& router);
+    void SetRoute(HttpMethod method, const std::string& path, HttpHandlerTask handler);
 
     void Setup();
     void Run();
@@ -22,17 +24,18 @@ public:
     void SetPort(int16_t port);
 
 private:
-    explicit HttpServer(int16_t port = 80);
-    ~HttpServer();
-    
-    
-
+    void RunAsync(TaskManager::Task task);
+    void RunInMainLoop(TaskManager::Task task);
+  
 private:
     int16_t _port;
-    Router* _router;
     mg_mgr* _mgr;
     mg_connection* _conn;
     bool _isRunning;
+
+    Router _router;
+    TaskManager _taskManager;
+
 };
 
 #endif // HTTPSERVER_H

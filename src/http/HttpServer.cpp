@@ -11,13 +11,6 @@ extern "C" {
 static NamedLogger s_logger("HttpServer");
 
 
-HttpServer& HttpServer::Get()
-{
-    static HttpServer instance;
-    return instance;
-}
-
-
 HttpServer::HttpServer(int16_t port)
     :   _port(port),
         _isRunning(false)
@@ -33,9 +26,15 @@ HttpServer::~HttpServer()
 }
 
 
-void HttpServer::SetRouter(Router* router)
+void HttpServer::SetRouter(const Router& router)
 {
     _router = router;
+}
+
+
+void HttpServer::SetRoute(HttpMethod method, const std::string& path, HttpHandlerTask handler)
+{
+    _router.Register(method, path, handler);
 }
 
 
@@ -59,14 +58,15 @@ void HttpServer::Setup()
         std::exit(1);
     }
 
-    _conn->fn_data = _router;
+    _conn->fn_data = &_router;
 
-    s_logger.Info("Server running at {}", addr);
+    s_logger.Info("Server setup at {}", addr);
 }
 
 
 void HttpServer::Run()
 {
+    s_logger.Info("Server is running");
     if (!_mgr || !_conn)
     {
         s_logger.Error("Server is not properly initialized");
@@ -92,4 +92,18 @@ void HttpServer::Stop()
         _isRunning = false;
         s_logger.Info("Server stopped");
     }
+}
+
+
+void HttpServer::RunAsync(TaskManager::Task task)
+{
+    s_logger.Info("RunAsync");
+    // _taskManager.Submit(task);
+}
+
+
+void HttpServer::RunInMainLoop(TaskManager::Task task)
+{
+    s_logger.Info("RunInMainLoop");
+    task();
 }

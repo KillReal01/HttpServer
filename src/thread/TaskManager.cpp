@@ -14,13 +14,6 @@ TaskManager::TaskManager(size_t threadPoolCapacity)
 { }
 
 
-TaskManager& TaskManager::Get()
-{
-    static TaskManager instance;
-    return instance;
-}
-
-
 void TaskManager::Submit(mg_connection* c, mg_http_message* hm, HttpHandlerTask task)
 {
     std::string method(hm->method.buf, hm->method.len);

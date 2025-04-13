@@ -18,16 +18,16 @@ extern "C" {
 class TaskManager
 {
 public:
-    static TaskManager& Get();
+
+    using Task = std::function<void()>;
+
+    explicit TaskManager(size_t threadPoolCapacity = std::thread::hardware_concurrency() - 1);
+    ~TaskManager() = default;
 
     TaskManager(const TaskManager&) = delete;
     TaskManager& operator=(const TaskManager&) = delete;
 
     void Submit(mg_connection* c, mg_http_message* hm, HttpHandlerTask task);
-
-private:
-    TaskManager(size_t threadPoolCapacity = std::thread::hardware_concurrency());
-    ~TaskManager() = default;
 
 private:
     size_t _threadPoolCapacity;
